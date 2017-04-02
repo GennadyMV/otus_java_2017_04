@@ -19,6 +19,8 @@
     </developers>
 
     <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <net.sf.opencsv.version>2.3</net.sf.opencsv.version>
         <maven.assembly.plugin.version>3.0.0</maven.assembly.plugin.version>
     </properties>
@@ -48,7 +50,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>ru.petrelevich.mainpkg.MainClass</mainClass>
+                            <mainClass>ru.otus.lottery.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
