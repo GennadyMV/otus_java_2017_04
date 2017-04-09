@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 /**
  * Created by sergey on 09.04.17.
  */
-public class GetSizeInstrumentationTest {
+public class GetSizeBySpecificationTest {
 
     @Test
     public void getSizeArrayMixed() throws GettingSizeError {
