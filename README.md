@@ -1,3 +1,4 @@
-# otus_java_2017_04
-Petrelevich Sergey
-Петрелевич Сергей
+Группа 2017-04.3
+Автор
+Petrelevich Sergey (Петрелевич Сергей)
+petrelevich@yandex.ru
