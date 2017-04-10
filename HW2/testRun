@@ -1,1 +1,2 @@
+mvn clean package
 java -javaagent:./target/getSize.jar -jar ./target/getSize.jar
