@@ -15,10 +15,14 @@ public class GetSizeBySpecification implements ObjectGetSize {
     @Override
     public long getSize(Object object) throws GettingSizeError {
         try {
-            return deepObjectGetSize(object, 0);
+            return deepObjectGetSize(object, 0) / 8;
         } catch (IllegalAccessException e) {
             throw new GettingSizeError(e.getMessage(), e);
         }
+    }
+
+    public long getSizeInternal(Object object) throws GettingSizeError, IllegalAccessException {
+       return deepObjectGetSize(object, 0);
     }
 
     private int getSizeSpec(Class type, Object object) throws GettingSizeError, IllegalAccessException {
@@ -29,7 +33,7 @@ public class GetSizeBySpecification implements ObjectGetSize {
                 if (field.getName().equals("value")) {
                     field.setAccessible(true);
                     char[] chars = (char[]) field.get(object);
-                    return (int) getSize(chars);
+                    return (int) getSizeInternal(chars);
                 }
             }
         } else {
