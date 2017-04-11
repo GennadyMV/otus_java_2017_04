@@ -6,4 +6,12 @@ package ru.otus.objectgetsize;
 public interface ObjectGetSize {
 
     long getSize(Object object) throws GettingSizeError;
+    long getSize(short shortVal) throws GettingSizeError;
+    long getSize(byte byteVal) throws GettingSizeError;
+    long getSize(int intVal) throws GettingSizeError;
+    long getSize(float floatVal) throws GettingSizeError;
+    long getSize(double doubleVal) throws GettingSizeError;
+    long getSize(long longVal) throws GettingSizeError;
+
+
 }
