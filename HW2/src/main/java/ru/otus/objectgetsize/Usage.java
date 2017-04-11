@@ -34,6 +34,16 @@ public class Usage {
         System.out.println("Array []:" + objSizeGetterInst.getSize(objArray)
                 + ", specification:" + objSizeGetterBySpec.getSize(objArray));
 
+        int[] arrInt = new int[]{};
+        System.out.println("ArrayInt[]:" + objSizeGetterInst.getSize(arrInt)
+                + ", specification:" + objSizeGetterBySpec.getSize(arrInt));
+
+
+        int[] arrInt1000 = new int[1000];
+        System.out.println("ArrayInt1000[]:" + objSizeGetterInst.getSize(arrInt1000)
+                + ", specification:" + objSizeGetterBySpec.getSize(arrInt1000));
+
+
         int intVal = 5;
         System.out.println("int:" + objSizeGetterInst.getSize(intVal)
                 + ", specification:" + objSizeGetterBySpec.getSize(intVal));
