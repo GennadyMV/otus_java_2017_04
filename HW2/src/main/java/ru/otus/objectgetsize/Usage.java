@@ -64,7 +64,6 @@ public class Usage {
         System.out.println("byte[4]:" + objSizeGetterInst.getSize(byteArr4)
                 + ", specification:" + objSizeGetterBySpec.getSize(byteArr4));
 
-
         System.out.println("getObjectSize end");
     }
 }
