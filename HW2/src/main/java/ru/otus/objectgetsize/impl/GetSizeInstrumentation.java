@@ -1,5 +1,6 @@
 package ru.otus.objectgetsize.impl;
 
+import ru.otus.objectgetsize.GettingSizeError;
 import ru.otus.objectgetsize.ObjectGetSize;
 import java.lang.instrument.Instrumentation;
 import java.lang.management.ManagementFactory;
@@ -53,5 +54,35 @@ public class GetSizeInstrumentation implements ObjectGetSize {
             throw new IllegalStateException("Instrumentation is not initialized");
         }
         return instrumentation.getObjectSize(object);
+    }
+
+    @Override
+    public long getSize(short shortVal) throws GettingSizeError {
+        return instrumentation.getObjectSize(shortVal);
+    }
+
+    @Override
+    public long getSize(byte byteVal) throws GettingSizeError {
+        return instrumentation.getObjectSize(byteVal);
+    }
+
+    @Override
+    public long getSize(int intVal) throws GettingSizeError {
+        return instrumentation.getObjectSize(intVal);
+    }
+
+    @Override
+    public long getSize(float floatVal) throws GettingSizeError {
+        return instrumentation.getObjectSize(floatVal);
+    }
+
+    @Override
+    public long getSize(double doubleVal) throws GettingSizeError {
+        return instrumentation.getObjectSize(doubleVal);
+    }
+
+    @Override
+    public long getSize(long longVal) throws GettingSizeError {
+        return instrumentation.getObjectSize(longVal);
     }
 }

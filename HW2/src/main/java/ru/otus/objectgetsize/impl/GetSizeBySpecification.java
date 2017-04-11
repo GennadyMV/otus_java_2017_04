@@ -14,6 +14,40 @@ public class GetSizeBySpecification implements ObjectGetSize {
 
     @Override
     public long getSize(Object object) throws GettingSizeError {
+        return getSizeObj(object);
+    }
+
+    @Override
+    public long getSize(short shortVal) throws GettingSizeError {
+        return getSizeObj(shortVal);
+    }
+
+    @Override
+    public long getSize(byte byteVal) throws GettingSizeError {
+        return getSizeObj(byteVal);
+    }
+
+    @Override
+    public long getSize(int intVal) throws GettingSizeError {
+        return getSizeObj(intVal);
+    }
+
+    @Override
+    public long getSize(float floatVal) throws GettingSizeError {
+        return getSizeObj(floatVal);
+    }
+
+    @Override
+    public long getSize(double doubleVal) throws GettingSizeError {
+        return getSizeObj(doubleVal);
+    }
+
+    @Override
+    public long getSize(long longVal) throws GettingSizeError {
+        return getSizeObj(longVal);
+    }
+
+    private long getSizeObj(Object object) throws GettingSizeError {
         try {
             return deepObjectGetSize(object, 0) / 8;
         } catch (IllegalAccessException e) {
@@ -21,7 +55,7 @@ public class GetSizeBySpecification implements ObjectGetSize {
         }
     }
 
-    public long getSizeInternal(Object object) throws GettingSizeError, IllegalAccessException {
+    private long getSizeInternal(Object object) throws GettingSizeError, IllegalAccessException {
        return deepObjectGetSize(object, 0);
     }
 
