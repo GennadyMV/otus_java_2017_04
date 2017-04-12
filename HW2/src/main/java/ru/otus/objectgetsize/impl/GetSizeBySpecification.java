@@ -47,6 +47,16 @@ public class GetSizeBySpecification implements ObjectGetSize {
         return getSizeObj(longVal);
     }
 
+    @Override
+    public long getSize(boolean boolVal) throws GettingSizeError {
+        return getSizeObj(boolVal);
+    }
+
+    @Override
+    public long getSize(char charVal) throws GettingSizeError {
+        return getSizeObj(charVal);
+    }
+
     private long getSizeObj(Object object) throws GettingSizeError {
         try {
             return deepObjectGetSize(object, 0) / 8;

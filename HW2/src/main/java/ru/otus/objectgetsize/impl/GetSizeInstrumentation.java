@@ -4,85 +4,87 @@ import ru.otus.objectgetsize.GettingSizeError;
 import ru.otus.objectgetsize.ObjectGetSize;
 import java.lang.instrument.Instrumentation;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.tools.attach.VirtualMachine;
 
 /**
  * Created by sergey on 09.04.17.
+ *
+ * This method is based on jol (http://openjdk.java.net/projects/code-tools/jol/)
  */
 public class GetSizeInstrumentation implements ObjectGetSize {
+// todo: implement getSize for compounded objects (arrays of classes and so on)
 
     private static Instrumentation instrumentation;
-    private static boolean premainExecuted = false;
+    private static InstrumentationUtils utils;
+
+    private static long arrayHeaderSize = 0;
 
     public static void premain(String args, Instrumentation pInstrumentation) {
         System.out.println("premain");
         instrumentation = pInstrumentation;
-        premainExecuted = true;
+        utils = new InstrumentationUtils();
+        arrayHeaderSize = instrumentation.getObjectSize(new Object[]{});
     }
 
-    public static void agentmain(String agentArgs, Instrumentation pInstrumentation) {
-        System.out.println("agentmain");
-        instrumentation = pInstrumentation;
-    }
-
-    private static void load(String thisJarFile) {
-        String vmName = ManagementFactory.getRuntimeMXBean().getName();
-        String pid = vmName.substring(0, vmName.indexOf('@'));
-
-        try {
-            VirtualMachine vm = VirtualMachine.attach(pid);
-            vm.loadAgent(thisJarFile);
-            vm.detach();
-        } catch (Exception e) {
-            System.err.println("vmName:" + vmName + ", pid:" + pid);
-            throw new RuntimeException(e);
-        }
-        premainExecuted = true;
-        System.out.println("instrumentation loading end");
+    public static long getArrayHeaderSize() {
+        return arrayHeaderSize;
     }
 
     @Override
     public long getSize(Object object) {
-        if (!premainExecuted) {
-            final String thisJarFile = this.getClass().getProtectionDomain().getCodeSource().getLocation().toString();
-            if (!thisJarFile.contains("jar")) {
-                throw new RuntimeException("Current jar file not found");
+        Class<?> componentType = object.getClass().getComponentType();
+        if (object.getClass().isArray() && componentType != null) {
+            long size = 0;
+            for (int idx = 0; idx < Array.getLength(object); idx++) {
+                size += utils.get(componentType.getName());
             }
-            load(thisJarFile);
+            return arrayHeaderSize + size;
+        } else {
+            return instrumentation.getObjectSize(object);
         }
-        if (instrumentation == null) {
-            throw new IllegalStateException("Instrumentation is not initialized");
-        }
-        return instrumentation.getObjectSize(object);
     }
 
     @Override
     public long getSize(short shortVal) throws GettingSizeError {
-        return instrumentation.getObjectSize(shortVal);
+        return utils.get("short");
+    }
+
+    @Override
+    public long getSize(boolean boolVal) throws GettingSizeError {
+        return utils.get("boolean");
+    }
+
+    @Override
+    public long getSize(char charVal) throws GettingSizeError {
+        return utils.get("char");
     }
 
     @Override
     public long getSize(byte byteVal) throws GettingSizeError {
-        return instrumentation.getObjectSize(byteVal);
+        return utils.get("byte");
     }
 
     @Override
     public long getSize(int intVal) throws GettingSizeError {
-        return instrumentation.getObjectSize(intVal);
+        return utils.get("int");
     }
 
     @Override
     public long getSize(float floatVal) throws GettingSizeError {
-        return instrumentation.getObjectSize(floatVal);
+        return utils.get("float");
     }
 
     @Override
     public long getSize(double doubleVal) throws GettingSizeError {
-        return instrumentation.getObjectSize(doubleVal);
+        return utils.get("double");
     }
 
     @Override
     public long getSize(long longVal) throws GettingSizeError {
-        return instrumentation.getObjectSize(longVal);
+        return utils.get("long");
     }
 }

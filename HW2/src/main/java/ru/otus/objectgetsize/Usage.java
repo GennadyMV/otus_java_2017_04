@@ -14,6 +14,7 @@ public class Usage {
         ObjectGetSize objSizeGetterInst = new GetSizeInstrumentation();
         ObjectGetSize objSizeGetterBySpec = new GetSizeBySpecification();
 
+        long header = GetSizeInstrumentation.getArrayHeaderSize();
 
         Object obj = new Object();
         System.out.println("object Size:" + objSizeGetterInst.getSize(obj) + ", specification:" + "N/A");
@@ -31,17 +32,21 @@ public class Usage {
                 + ", specification:" + objSizeGetterBySpec.getSize(longString));
 
         Object[] objArray = new Object[]{};
-        System.out.println("Array []:" + objSizeGetterInst.getSize(objArray)
+        System.out.println("Array []:" + objSizeGetterInst.getSize(objArray) + " (header:" + header + ") "
                 + ", specification:" + objSizeGetterBySpec.getSize(objArray));
 
         int[] arrInt = new int[]{};
-        System.out.println("ArrayInt[]:" + objSizeGetterInst.getSize(arrInt)
+        System.out.println("ArrayInt[]:" + objSizeGetterInst.getSize(arrInt) + " (header:" + header + ") "
                 + ", specification:" + objSizeGetterBySpec.getSize(arrInt));
 
 
         int[] arrInt1000 = new int[1000];
-        System.out.println("ArrayInt1000[]:" + objSizeGetterInst.getSize(arrInt1000)
+        System.out.println("ArrayInt1000[]:" + objSizeGetterInst.getSize(arrInt1000) + " (header:" + header + ") "
                 + ", specification:" + objSizeGetterBySpec.getSize(arrInt1000));
+
+        short[] arrShort1000 = new short[1000];
+        System.out.println("ArrayShort1000[]:" + objSizeGetterInst.getSize(arrShort1000) + " (header:" + header + ") "
+                + ", specification:" + objSizeGetterBySpec.getSize(arrShort1000));
 
 
         int intVal = 5;
@@ -57,11 +62,11 @@ public class Usage {
                 + ", specification:" + objSizeGetterBySpec.getSize(byteVal));
 
         byte[] byteArr2 = new byte[2];
-        System.out.println("byte[2]:" + objSizeGetterInst.getSize(byteArr2)
+        System.out.println("byte[2]:" + objSizeGetterInst.getSize(byteArr2) + " (header:" + header + ") "
                 + ", specification:" + objSizeGetterBySpec.getSize(byteArr2));
 
         byte[] byteArr4 = new byte[4];
-        System.out.println("byte[4]:" + objSizeGetterInst.getSize(byteArr4)
+        System.out.println("byte[4]:" + objSizeGetterInst.getSize(byteArr4) + " (header:" + header + ") "
                 + ", specification:" + objSizeGetterBySpec.getSize(byteArr4));
 
         System.out.println("getObjectSize end");
