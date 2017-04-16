@@ -3,12 +3,8 @@ package ru.otus.objectgetsize.impl;
 import ru.otus.objectgetsize.GettingSizeError;
 import ru.otus.objectgetsize.ObjectGetSize;
 import java.lang.instrument.Instrumentation;
-import java.lang.management.ManagementFactory;
 import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.sun.tools.attach.VirtualMachine;
 
 /**
  * Created by sergey on 09.04.17.

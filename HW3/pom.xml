@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>ru.otus</groupId>
-    <artifactId>otus_java_2017_04_HW2</artifactId>
+    <artifactId>otus_java_2017_04_HW3</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>getSize</name>
+    <name>myTypes</name>
 
     <description>
-        Getting object size
+        Creating user types
     </description>
 
     <developers>
@@ -45,11 +45,8 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.objectgetsize.Usage</mainClass>
+                            <mainClass>ru.otus.myTypesUsage</mainClass>
                         </manifest>
-                        <manifestEntries>
-                            <Premain-Class>ru.otus.objectgetsize.impl.GetSizeInstrumentation</Premain-Class>
-                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -67,5 +64,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
