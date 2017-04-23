@@ -20,7 +20,7 @@ http://www.fasterj.com/articles/oraclecollectors1.shtml
 1 ConcurrentMarkSweep (UseConcMarkSweepGC) - | -                  36 | 21175
 3 G1 Mixed Generation (UseG1GC)            - | -                   1 | 271 (*)
 
-  (*) Was executed just after 5min before OutOfMemory
+  (*) Was executed just after 5min, before OutOfMemory.
 */
 
 public class GcTest {
