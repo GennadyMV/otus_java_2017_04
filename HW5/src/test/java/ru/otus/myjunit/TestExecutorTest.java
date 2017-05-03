@@ -1,6 +1,5 @@
 package ru.otus.myjunit;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import ru.otus.myjunit.test.TestOne;
 import ru.otus.myjunit.test.TestForException;
