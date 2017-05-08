@@ -80,22 +80,15 @@ public class TestExecutor {
                 obj.getClass().getMethod(method.getName()).invoke(obj);
                 executeAfter(test);
                 test.saveTestResult(new TestResult(method.getName(), true, null));
-            } catch (Exception e) {
-                Throwable targetException;
+            } catch (InvocationTargetException e) {
                 TestResult testResult = null;
-
-                if (e instanceof InvocationTargetException) {
-                    targetException = ((InvocationTargetException) e).getTargetException();
-                    if (targetException != null && targetException instanceof AssertionError) {
-                        testResult = new TestResult(method.getName(), false, targetException.getMessage());
-                    }
-                }
-
-                if (testResult == null) {
-                    testResult = new TestResult(method.getName(), false, e.getMessage());
-                    e.printStackTrace();
+                Throwable  targetException = e.getTargetException();
+                if (targetException != null && targetException instanceof AssertionError) {
+                    testResult = new TestResult(method.getName(), false, targetException.getMessage());
                 }
                 test.saveTestResult(testResult);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
