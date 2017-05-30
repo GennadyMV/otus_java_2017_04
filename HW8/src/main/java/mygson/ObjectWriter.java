@@ -1,5 +1,6 @@
 package mygson;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 
 /**
@@ -32,102 +33,43 @@ public class ObjectWriter {
         try {
             field.setAccessible(true);
             if (field.getType().isArray()) {
-                Object value = field.get(obj);
+                final Object value = field.get(obj);
                 final String type = value.getClass().getComponentType().getCanonicalName();
                 switch (type) {
                     case "byte":
-                        byte[] byteValue = (byte[]) value;
-                        for (int i = 0; i < byteValue.length; i++) {
-                             if (i > 0) {
-                                 sb.append(",");
-                             }
-                             sb.append(byteValue[i]);
-                        }
-                        return sb.toString();
                     case "short":
-                        short[] shortValue = (short[]) value;
-                        for (int i = 0; i < shortValue.length; i++) {
-                            if (i > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(shortValue[i]);
-                        }
-                        return sb.toString();
                     case "int":
-                        int[]  intValue = (int[]) value;
-                        for (int i = 0; i < intValue.length; i++) {
-                            if (i > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(intValue[i]);
-                        }
-                        return sb.toString();
                     case "long":
-                        long[] longValue = (long[]) value;
-                        for (int i = 0; i < longValue.length; i++) {
-                            if (i > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(longValue[i]);
-                        }
-                        return sb.toString();
                     case "float":
-                        float[] floatValue = (float[]) value;
-                        for (int i = 0; i < floatValue.length; i++) {
-                            if (i > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(floatValue[i]);
-                        }
-                        return sb.toString();
                     case "double":
-                        double[] doubleValue = (double[]) value;
-                        for (int i = 0; i < doubleValue.length; i++) {
-                            if (i > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(doubleValue[i]);
-                        }
-                        return sb.toString();
                     case "boolean":
-                        boolean[] booleanValue = (boolean[]) value;
-                        for (int i = 0; i < booleanValue.length; i++) {
-                            if (i > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(booleanValue[i]);
-                        }
-                        return sb.toString();
                     case "char":
-                        char[] charValue = (char[]) value;
-                        for (int i = 0; i < charValue.length; i++) {
+                        for (int i = 0; i < Array.getLength(value); i++) {
                             if (i > 0) {
                                 sb.append(",");
                             }
-                            sb.append(charValue[i]);
+                            sb.append(Array.get(value, i));
                         }
                         return sb.toString();
                     case "java.lang.String":
-                        String[] stringValue = (String[]) value;
-                        for (int i = 0; i < stringValue.length; i++) {
+                        for (int i = 0; i < Array.getLength(value); i++) {
                             if (i > 0) {
                                 sb.append(",");
                             }
-                            sb.append("\"").append(stringValue[i]).append("\"");
+                            sb.append("\"").append(Array.get(value, i)).append("\"");
                         }
                         return sb.toString();
                     default:
-                        Object[] objectValue = (Object[]) value;
-                        for (int i = 0; i < objectValue.length; i++) {
+                        for (int i = 0; i < Array.getLength(value); i++) {
                             if (i > 0) {
                                sb.append(",");
                             }
 
                             if (isPrimitive(field)) {
-                                sb.append(objectValue[i]);
+                                sb.append(Array.get(value, i));
                             } else {
                                 sb.append(OPEN);
-                                sb.append(processFields(objectValue[i]));
+                                sb.append(processFields(Array.get(value, i)));
                                 sb.append(CLOSE);
                             }
                         }
