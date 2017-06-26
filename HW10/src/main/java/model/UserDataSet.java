@@ -1,15 +1,16 @@
 package model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.CascadeType;
 
 
 /**
@@ -32,7 +33,8 @@ public class UserDataSet {
     @Column(name = "age")
     private Integer age;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "Id", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="id")
     private AddressDataSet addressDataSet;
 
     public UserDataSet() {
@@ -72,15 +74,26 @@ public class UserDataSet {
     }
 
     @Override
+    public String toString() {
+        return "UserDataSet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", addressDataSet=" + addressDataSet +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserDataSet userDataSet = (UserDataSet) o;
+        UserDataSet that = (UserDataSet) o;
 
-        if (id != null ? !id.equals(userDataSet.id) : userDataSet.id != null) return false;
-        if (name != null ? !name.equals(userDataSet.name) : userDataSet.name != null) return false;
-        return age != null ? age.equals(userDataSet.age) : userDataSet.age == null;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (age != null ? !age.equals(that.age) : that.age != null) return false;
+        return addressDataSet != null ? addressDataSet.equals(that.addressDataSet) : that.addressDataSet == null;
     }
 
     @Override
@@ -88,17 +101,7 @@ public class UserDataSet {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
+        result = 31 * result + (addressDataSet != null ? addressDataSet.hashCode() : 0);
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "UserDataSet{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
-
-
 }

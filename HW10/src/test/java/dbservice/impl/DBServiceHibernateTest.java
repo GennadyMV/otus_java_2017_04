@@ -4,6 +4,7 @@ import dbservice.DBService;
 import jpausage.SqlDao;
 import jpausage.impl.ConnectionHelper;
 import jpausage.impl.SqlDaoImpl;
+import model.AddressDataSet;
 import model.UserDataSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,21 +21,35 @@ import static junit.framework.TestCase.assertEquals;
 public class DBServiceHibernateTest {
 
     private void createUser() throws Exception {
+        final String insertAddr = "insert into taddress(street, index) values (?, ?)";
+        final SqlDao sqlDao = new SqlDaoImpl(new ConnectionHelper().getConnection());
+        sqlDao.executeUpdate(insertAddr, ps -> {
+            ps.setString(1, "test street");
+            ps.setInt(2, 444);
+        });
+
+        final long addrId = sqlDao.queryExecutor("select id from taddress", null, rs -> {
+            AddressDataSet result = new AddressDataSet();
+            while (rs.next()) {
+                result.setId(rs.getLong("id"));
+            }
+            return result.getId();
+        });
+
         final String userName = "userName1" + System.currentTimeMillis();
         final Integer age = 10;
-        final String insert = "insert into tuser(name, age) values (?, ?)";
-        SqlDao sqlDao = new SqlDaoImpl(new ConnectionHelper().getConnection());
+        final String insert = "insert into tuser(name, age, address_id) values (?, ?, ?)";
         sqlDao.executeUpdate(insert, ps -> {
             ps.setString(1, userName);
             ps.setInt(2, age);
+            ps.setLong(3, addrId);
         });
+        sqlDao.close();
     }
 
     private UserDataSet getUser() throws Exception {
-        SqlDao sqlDao = new SqlDaoImpl(new ConnectionHelper().getConnection());
-
-        final String select = "select id, name, age from tuser";
-        UserDataSet user = sqlDao.queryExecutor(select, null, rs -> {
+        final SqlDao sqlDao = new SqlDaoImpl(new ConnectionHelper().getConnection());
+        UserDataSet user = sqlDao.queryExecutor("select id, name, age from tuser", null, rs -> {
             UserDataSet result = new UserDataSet();
             while (rs.next()) {
                 result.setId(rs.getLong("id"));
@@ -43,6 +58,17 @@ public class DBServiceHibernateTest {
             }
             return result;
         });
+
+        AddressDataSet addressDataSet = sqlDao.queryExecutor("select id, street, index from taddress", null, rs -> {
+            AddressDataSet result = new AddressDataSet();
+            while (rs.next()) {
+                result.setId(rs.getLong("id"));
+                result.setStreet(rs.getString("street"));
+                result.setIndex(rs.getInt("index"));
+            }
+            return result;
+        });
+        user.setAddressDataSet(addressDataSet);
         sqlDao.close();
         return user;
     }
@@ -73,6 +99,11 @@ public class DBServiceHibernateTest {
         userDataSet.setName("userName");
         userDataSet.setAge(33);
 
+        final AddressDataSet addressDataSet = new AddressDataSet();
+        addressDataSet.setIndex(44);
+        addressDataSet.setStreet("new Street");
+        userDataSet.setAddressDataSet(addressDataSet);
+
         DBService dbService = new DBServiceHibernate();
         dbService.startup();
         dbService.save(userDataSet);
@@ -83,7 +114,8 @@ public class DBServiceHibernateTest {
         assertEquals("userDataSet Name", userDataSet.getName(), userDataSetFact.getName());
         assertEquals("userDataSet Age", userDataSet.getAge(), userDataSetFact.getAge());
 
-
+        assertEquals("addressDataSet Index", userDataSet.getAddressDataSet().getIndex(), userDataSetFact.getAddressDataSet().getIndex());
+        assertEquals("addressDataSet Street", userDataSet.getAddressDataSet().getStreet(), userDataSetFact.getAddressDataSet().getStreet());
     }
 
     @Test
