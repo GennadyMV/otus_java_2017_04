@@ -17,7 +17,7 @@ public class UserDataSetDAO {
     }
 
     public void save(UserDataSet dataSet) {
-        session.save(dataSet);
+        session.saveOrUpdate(dataSet);
     }
 
     public UserDataSet read(long id) {

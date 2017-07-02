@@ -29,9 +29,12 @@ public class PhoneDataSet {
     private String number;
 
     @ManyToOne
-    @JoinColumn(name="userId", nullable=false)
+    @JoinColumn(name = "userId")
     private UserDataSet user;
 
+    public PhoneDataSet() {
+
+    }
 
     public UserDataSet getUser() {
         return user;
@@ -66,6 +69,15 @@ public class PhoneDataSet {
     }
 
     @Override
+    public String toString() {
+        return "PhoneDataSet{" +
+                "id=" + id +
+                ", code=" + code +
+                ", number='" + number + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -85,15 +97,5 @@ public class PhoneDataSet {
         result = 31 * result + (number != null ? number.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "PhoneDataSet{" +
-                "id=" + id +
-                ", code=" + code +
-                ", number='" + number + '\'' +
-                ", user=" + user +
-                '}';
     }
 }

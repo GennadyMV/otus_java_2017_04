@@ -4,6 +4,7 @@ package model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,7 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,12 +41,18 @@ public class UserDataSet {
     @JoinColumn(name="address_id")
     private AddressDataSet addressDataSet;
 
-    @OneToMany(mappedBy = "user")
-    private List<PhoneDataSet> phoneDataSet;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PhoneDataSet> phoneDataSet = new ArrayList<>();
 
     public UserDataSet() {
+
     }
 
+    public UserDataSet(UserDataSet uds) {
+        this.id = uds.getId();
+        this.name = uds.getName();
+        this.age = uds.getAge();
+    }
 
     public AddressDataSet getAddressDataSet() {
         return addressDataSet;
@@ -86,6 +95,17 @@ public class UserDataSet {
     }
 
     @Override
+    public String toString() {
+        return "UserDataSet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", addressDataSet=" + addressDataSet +
+                ", phoneDataSet=" + phoneDataSet +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -97,7 +117,17 @@ public class UserDataSet {
         if (age != null ? !age.equals(that.age) : that.age != null) return false;
         if (addressDataSet != null ? !addressDataSet.equals(that.addressDataSet) : that.addressDataSet != null)
             return false;
-        return phoneDataSet != null ? phoneDataSet.equals(that.phoneDataSet) : that.phoneDataSet == null;
+
+        if (phoneDataSet != null) {
+            if (that.phoneDataSet != null) {
+                return phoneDataSet.size() == that.phoneDataSet.size()
+                        && phoneDataSet.stream().filter(s -> that.phoneDataSet.contains(s)).collect(Collectors.toSet()).isEmpty();
+            } else {
+                return false;
+            }
+        } else {
+           return that.phoneDataSet == null;
+        }
     }
 
     @Override
@@ -108,16 +138,5 @@ public class UserDataSet {
         result = 31 * result + (addressDataSet != null ? addressDataSet.hashCode() : 0);
         result = 31 * result + (phoneDataSet != null ? phoneDataSet.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "UserDataSet{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", addressDataSet=" + addressDataSet +
-                ", phoneDataSet=" + phoneDataSet +
-                '}';
     }
 }

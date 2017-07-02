@@ -26,6 +26,15 @@ public class AddressDataSet {
     @Column(name = "index")
     private int index;
 
+    public AddressDataSet() {
+    }
+
+    public AddressDataSet(AddressDataSet ads) {
+        this.id = ads.getId();
+        this.street = ads.getStreet();
+        this.index = ads.getIndex();
+    }
+
     public String getStreet() {
         return street;
     }
@@ -51,6 +60,15 @@ public class AddressDataSet {
     }
 
     @Override
+    public String toString() {
+        return "AddressDataSet{" +
+                "id=" + id +
+                ", street='" + street + '\'' +
+                ", index=" + index +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -68,14 +86,5 @@ public class AddressDataSet {
         result = 31 * result + (street != null ? street.hashCode() : 0);
         result = 31 * result + index;
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AddressDataSet{" +
-                "id=" + id +
-                ", street='" + street + '\'' +
-                ", index=" + index +
-                '}';
     }
 }

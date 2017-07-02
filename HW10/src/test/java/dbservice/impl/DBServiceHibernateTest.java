@@ -5,11 +5,13 @@ import jpausage.SqlDao;
 import jpausage.impl.ConnectionHelper;
 import jpausage.impl.SqlDaoImpl;
 import model.AddressDataSet;
+import model.PhoneDataSet;
 import model.UserDataSet;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -20,10 +22,10 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class DBServiceHibernateTest {
 
-    private void createUser() throws Exception {
+    private void createUser(long id) throws Exception {
         final String insertAddr = "insert into taddress(id, street, index) values (?, ?, ?)";
         final SqlDao sqlDao = new SqlDaoImpl(new ConnectionHelper().getConnection());
-        final long addrId = 1;
+        final long addrId = id;
         sqlDao.executeUpdate(insertAddr, ps -> {
             ps.setLong(1, addrId);
             ps.setString(2, "test street");
@@ -32,7 +34,7 @@ public class DBServiceHibernateTest {
 
         final String userName = "userName1" + System.currentTimeMillis();
         final Integer age = 10;
-        final long userId = 1;
+        final long userId = id;
         final String insert = "insert into tuser(id, name, age, address_id) values (?, ?, ?, ?)";
         sqlDao.executeUpdate(insert, ps -> {
             ps.setLong(1, userId);
@@ -79,7 +81,21 @@ public class DBServiceHibernateTest {
             }
             return result;
         });
+
+        List<PhoneDataSet> phoneDataSet = sqlDao.queryExecutor("select id, userId, code, number from tphone", null, rs -> {
+            List<PhoneDataSet> result = new ArrayList<>();
+            while (rs.next()) {
+                PhoneDataSet phoneDataSetRec = new PhoneDataSet();
+                phoneDataSetRec.setUser(new UserDataSet(user));
+                phoneDataSetRec.setCode(rs.getInt("code"));
+                phoneDataSetRec.setId(rs.getLong("id"));
+                phoneDataSetRec.setNumber(rs.getString("number"));
+                result.add(phoneDataSetRec);
+            }
+            return result;
+        });
         user.setAddressDataSet(addressDataSet);
+        user.setPhoneDataSet(phoneDataSet);
         sqlDao.close();
         return user;
     }
@@ -88,6 +104,7 @@ public class DBServiceHibernateTest {
     public void initTestTable() throws Exception {
         Connection connection = new ConnectionHelper().getConnection();
         SqlDaoImpl sqlDao = new SqlDaoImpl(connection);
+        sqlDao.executeUpdate("delete from tphone", null);
         sqlDao.executeUpdate("delete from tuser", null);
         sqlDao.executeUpdate("delete from taddress", null);
         sqlDao.close();
@@ -107,6 +124,9 @@ public class DBServiceHibernateTest {
 
     @Test
     public void save() throws Exception {
+        DBService dbService = new DBServiceHibernate();
+        dbService.startup();
+
         final UserDataSet userDataSet = new UserDataSet();
         userDataSet.setName("userName");
         userDataSet.setAge(33);
@@ -115,9 +135,22 @@ public class DBServiceHibernateTest {
         addressDataSet.setIndex(44);
         addressDataSet.setStreet("new Street");
         userDataSet.setAddressDataSet(addressDataSet);
+        dbService.save(userDataSet);
 
-        DBService dbService = new DBServiceHibernate();
-        dbService.startup();
+        final List<PhoneDataSet> phoneDataSetList = new ArrayList<>();
+        final PhoneDataSet phoneDataSet1 = new PhoneDataSet();
+        phoneDataSet1.setNumber("1-1-1");
+        phoneDataSet1.setCode(1);
+        phoneDataSet1.setUser(new UserDataSet(userDataSet));
+        phoneDataSetList.add(phoneDataSet1);
+
+        final PhoneDataSet phoneDataSet2 = new PhoneDataSet();
+        phoneDataSet2.setNumber("2-2-2");
+        phoneDataSet2.setCode(2);
+        phoneDataSet2.setUser(new UserDataSet(userDataSet));
+        phoneDataSetList.add(phoneDataSet2);
+
+        userDataSet.setPhoneDataSet(phoneDataSetList);
         dbService.save(userDataSet);
         dbService.shutdown();
 
@@ -128,11 +161,14 @@ public class DBServiceHibernateTest {
 
         assertEquals("addressDataSet Index", userDataSet.getAddressDataSet().getIndex(), userDataSetFact.getAddressDataSet().getIndex());
         assertEquals("addressDataSet Street", userDataSet.getAddressDataSet().getStreet(), userDataSetFact.getAddressDataSet().getStreet());
+
+        assertEquals("addressDataSet Phone size", userDataSet.getPhoneDataSet().size(), userDataSetFact.getPhoneDataSet().size());
+        assertEquals("addressDataSet Phone", userDataSet.getPhoneDataSet().get(0), userDataSetFact.getPhoneDataSet().get(0));
     }
 
     @Test
     public void read() throws Exception {
-        createUser();
+        createUser(1);
         UserDataSet user = getUser();
 
         DBService dbService = new DBServiceHibernate();
@@ -146,7 +182,7 @@ public class DBServiceHibernateTest {
 
     @Test
     public void readByName() throws Exception {
-        createUser();
+        createUser(1);
         UserDataSet user = getUser();
 
         DBService dbService = new DBServiceHibernate();
@@ -163,7 +199,7 @@ public class DBServiceHibernateTest {
     public void readAll() throws Exception {
         final int size = 5;
         for (int idx = 0; idx < size; idx++) {
-            createUser();
+            createUser(idx+1);
         }
 
         DBService dbService = new DBServiceHibernate();
@@ -174,7 +210,4 @@ public class DBServiceHibernateTest {
         System.out.println("loaded userFact:" + userList);
         assertEquals("userList size", size, userList.size());
     }
-
-
-
 }

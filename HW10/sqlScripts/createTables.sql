@@ -25,4 +25,3 @@ CREATE TABLE tphone (
 GRANT ALL PRIVILEGES ON TABLE tphone TO userdb;
 GRANT ALL PRIVILEGES ON SEQUENCE tphone_id_seq TO userdb;
 
-CREATE TABLE tuser_tphone
