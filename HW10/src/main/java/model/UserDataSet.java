@@ -4,13 +4,14 @@ package model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.List;
 
 
 /**
@@ -33,9 +34,12 @@ public class UserDataSet {
     @Column(name = "age")
     private Integer age;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="address_id")
     private AddressDataSet addressDataSet;
+
+    @OneToMany(mappedBy = "user")
+    private List<PhoneDataSet> phoneDataSet;
 
     public UserDataSet() {
     }
@@ -73,14 +77,12 @@ public class UserDataSet {
         this.age = age;
     }
 
-    @Override
-    public String toString() {
-        return "UserDataSet{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", addressDataSet=" + addressDataSet +
-                '}';
+    public List<PhoneDataSet> getPhoneDataSet() {
+        return phoneDataSet;
+    }
+
+    public void setPhoneDataSet(List<PhoneDataSet> phoneDataSet) {
+        this.phoneDataSet = phoneDataSet;
     }
 
     @Override
@@ -93,7 +95,9 @@ public class UserDataSet {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (age != null ? !age.equals(that.age) : that.age != null) return false;
-        return addressDataSet != null ? addressDataSet.equals(that.addressDataSet) : that.addressDataSet == null;
+        if (addressDataSet != null ? !addressDataSet.equals(that.addressDataSet) : that.addressDataSet != null)
+            return false;
+        return phoneDataSet != null ? phoneDataSet.equals(that.phoneDataSet) : that.phoneDataSet == null;
     }
 
     @Override
@@ -102,6 +106,18 @@ public class UserDataSet {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
         result = 31 * result + (addressDataSet != null ? addressDataSet.hashCode() : 0);
+        result = 31 * result + (phoneDataSet != null ? phoneDataSet.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDataSet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", addressDataSet=" + addressDataSet +
+                ", phoneDataSet=" + phoneDataSet +
+                '}';
     }
 }

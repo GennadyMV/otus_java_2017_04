@@ -3,6 +3,7 @@ package dbservice.impl;
 import dbservice.DBService;
 import hibernate.UserDataSetDAO;
 import model.AddressDataSet;
+import model.PhoneDataSet;
 import model.UserDataSet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,6 +30,7 @@ public class DBServiceHibernate  implements DBService {
 
         configuration.addAnnotatedClass(UserDataSet.class);
         configuration.addAnnotatedClass(AddressDataSet.class);
+        configuration.addAnnotatedClass(PhoneDataSet.class);
 
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");

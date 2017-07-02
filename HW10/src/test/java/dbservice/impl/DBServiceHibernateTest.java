@@ -21,29 +21,40 @@ import static junit.framework.TestCase.assertEquals;
 public class DBServiceHibernateTest {
 
     private void createUser() throws Exception {
-        final String insertAddr = "insert into taddress(street, index) values (?, ?)";
+        final String insertAddr = "insert into taddress(id, street, index) values (?, ?, ?)";
         final SqlDao sqlDao = new SqlDaoImpl(new ConnectionHelper().getConnection());
+        final long addrId = 1;
         sqlDao.executeUpdate(insertAddr, ps -> {
-            ps.setString(1, "test street");
-            ps.setInt(2, 444);
-        });
-
-        final long addrId = sqlDao.queryExecutor("select id from taddress", null, rs -> {
-            AddressDataSet result = new AddressDataSet();
-            while (rs.next()) {
-                result.setId(rs.getLong("id"));
-            }
-            return result.getId();
+            ps.setLong(1, addrId);
+            ps.setString(2, "test street");
+            ps.setInt(3, 444);
         });
 
         final String userName = "userName1" + System.currentTimeMillis();
         final Integer age = 10;
-        final String insert = "insert into tuser(name, age, address_id) values (?, ?, ?)";
+        final long userId = 1;
+        final String insert = "insert into tuser(id, name, age, address_id) values (?, ?, ?, ?)";
         sqlDao.executeUpdate(insert, ps -> {
-            ps.setString(1, userName);
-            ps.setInt(2, age);
-            ps.setLong(3, addrId);
+            ps.setLong(1, userId);
+            ps.setString(2, userName);
+            ps.setInt(3, age);
+            ps.setLong(4, addrId);
         });
+
+        final String insertPhones = "insert into tphone(userId, code, number) values (?, ?, ?)";
+
+        sqlDao.executeUpdate(insertPhones, ps -> {
+            ps.setLong(1, userId);
+            ps.setInt(2, 1);
+            ps.setString(3, "1-1-1");
+        });
+
+        sqlDao.executeUpdate(insertPhones, ps -> {
+            ps.setLong(1, userId);
+            ps.setInt(2, 2);
+            ps.setString(3, "2-2-2");
+        });
+
         sqlDao.close();
     }
 
@@ -78,6 +89,7 @@ public class DBServiceHibernateTest {
         Connection connection = new ConnectionHelper().getConnection();
         SqlDaoImpl sqlDao = new SqlDaoImpl(connection);
         sqlDao.executeUpdate("delete from tuser", null);
+        sqlDao.executeUpdate("delete from taddress", null);
         sqlDao.close();
     }
 
@@ -109,7 +121,7 @@ public class DBServiceHibernateTest {
         dbService.save(userDataSet);
         dbService.shutdown();
 
-        UserDataSet userDataSetFact = getUser();
+        final UserDataSet userDataSetFact = getUser();
 
         assertEquals("userDataSet Name", userDataSet.getName(), userDataSetFact.getName());
         assertEquals("userDataSet Age", userDataSet.getAge(), userDataSetFact.getAge());
