@@ -1,6 +1,7 @@
 package webservice;
 
-import dbservice.impl.DBServiceHibernate;
+import cache.CacheEngine;
+import model.UserDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +17,10 @@ import java.util.Map;
  */
 public class AdminServlet extends HttpServlet {
     private static final String ADMIN_PAGE_TEMPLATE = "admin.html";
-    private DBServiceHibernate dbService;
+    private final CacheEngine<Long, UserDataSet> userCache;
 
-    public AdminServlet(DBServiceHibernate dbService) {
-        this.dbService = dbService;
+    public AdminServlet(CacheEngine<Long, UserDataSet> userCache) {
+        this.userCache = userCache;
     }
 
     public void doGet(HttpServletRequest request,
@@ -42,8 +43,8 @@ public class AdminServlet extends HttpServlet {
         pageVariables.put("sessionId", request.getSession().getId());
         pageVariables.put("parameters", request.getParameterMap().toString());
 
-        pageVariables.put("hitCount", dbService.getHitCount());
-        pageVariables.put("missCount", dbService.getMissCount());
+        pageVariables.put("hitCount", userCache.getHitCount());
+        pageVariables.put("missCount", userCache.getMissCount());
 
 
         //let's get login from session

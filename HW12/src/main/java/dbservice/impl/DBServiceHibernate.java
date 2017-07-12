@@ -27,11 +27,17 @@ import java.util.function.Function;
 public class DBServiceHibernate  implements DBService {
 
     private SessionFactory sessionFactory;
-    private CacheEngine<Long, UserDataSet> userCache;
+    private final CacheEngine<Long, UserDataSet> userCache;
 
     public static final int MAX_ELEMENTS = 300;
     public static final long LIFE_TIMES_M = 10;
     public static final long IDLE_TIME_M = 10;
+
+    public DBServiceHibernate() {
+        userCache = new CacheEngineImpl<>(MAX_ELEMENTS, TimeUnit.MINUTES.toMillis(LIFE_TIMES_M),
+                TimeUnit.MINUTES.toMillis(IDLE_TIME_M),
+                false);
+    }
 
     @Override
     public void startup() throws SQLException {
@@ -52,10 +58,6 @@ public class DBServiceHibernate  implements DBService {
         configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 
         sessionFactory = createSessionFactory(configuration);
-        userCache = new CacheEngineImpl<>(MAX_ELEMENTS,
-                TimeUnit.MINUTES.toMillis(LIFE_TIMES_M),
-                TimeUnit.MINUTES.toMillis(IDLE_TIME_M),
-                false);
     }
 
     @Override
@@ -129,11 +131,7 @@ public class DBServiceHibernate  implements DBService {
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
-    public int getHitCount() {
-        return userCache.getHitCount();
-    }
-
-    public int getMissCount() {
-        return userCache.getMissCount();
+    public CacheEngine<Long, UserDataSet> getUserCache() {
+        return userCache;
     }
 }

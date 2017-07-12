@@ -1,7 +1,8 @@
 package webservice;
 
+import cache.CacheEngine;
 import com.google.gson.Gson;
-import dbservice.impl.DBServiceHibernate;
+import model.UserDataSet;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -18,10 +19,10 @@ import java.io.IOException;
 
 @WebSocket
 public class CachInfoSocket {
-    private final DBServiceHibernate dbService;
+    private final CacheEngine<Long, UserDataSet> userCache;
 
-    public CachInfoSocket(DBServiceHibernate dbService) {
-        this.dbService = dbService;
+    public CachInfoSocket(CacheEngine<Long, UserDataSet> userCache) {
+        this.userCache = userCache;
     }
 
     @OnWebSocketMessage
@@ -38,7 +39,7 @@ public class CachInfoSocket {
     private void sendData(Session session) {
         while(true) {
             try {
-                final CachInfo cachInfo = new CachInfo(dbService.getHitCount(), dbService.getMissCount());
+                final CachInfo cachInfo = new CachInfo(userCache.getHitCount(), userCache.getMissCount());
                 final String data = new Gson().toJson(cachInfo);
                 session.getRemote().sendString(data);
                 System.out.println("Sending message:" + data);

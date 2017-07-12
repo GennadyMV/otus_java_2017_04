@@ -24,8 +24,8 @@ public class Web {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
         context.addServlet(LoginServlet.class, "/login");
-        context.addServlet(new ServletHolder(new AdminServlet(dbServiceUsage.getDbService())), "/admin");
-        context.addServlet(new ServletHolder(new WebSocketCachInfoServlet(dbServiceUsage.getDbService())), "/getCachInfo");
+        context.addServlet(new ServletHolder(new AdminServlet(dbServiceUsage.getDbService().getUserCache())), "/admin");
+        context.addServlet(new ServletHolder(new WebSocketCachInfoServlet(dbServiceUsage.getDbService().getUserCache())), "/getCachInfo");
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));

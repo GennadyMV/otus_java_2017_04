@@ -1,6 +1,7 @@
 package webservice;
 
-import dbservice.impl.DBServiceHibernate;
+import cache.CacheEngine;
+import model.UserDataSet;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
@@ -10,17 +11,17 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
  *         created on 07.07.17.
  */
 public class CachInfoWebSocketCreator implements WebSocketCreator {
-    private final DBServiceHibernate dbService;
+    private final CacheEngine<Long, UserDataSet> userCache;
 
-    public CachInfoWebSocketCreator(DBServiceHibernate dbService) {
-        this.dbService = dbService;
+    public CachInfoWebSocketCreator(CacheEngine<Long, UserDataSet> userCache) {
+        this.userCache = userCache;
         System.out.println("WebSocketCreator created");
     }
 
 
     @Override
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
-        CachInfoSocket socket = new CachInfoSocket(dbService);
+        CachInfoSocket socket = new CachInfoSocket(userCache);
         System.out.println("Socket created");
         return socket;
     }
