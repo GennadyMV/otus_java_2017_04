@@ -1,6 +1,7 @@
 package webservice;
 
-import dbservice.impl.DBServiceHibernate;
+import cache.CacheEngine;
+import model.UserDataSet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
@@ -10,16 +11,16 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
  */
 public class WebSocketCachInfoServlet extends WebSocketServlet {
     private final static int LOGOUT_TIME = 10 * 60 * 1000;
-    private final DBServiceHibernate dbService;
+    private final CacheEngine<Long, UserDataSet> userCache;
 
-    public WebSocketCachInfoServlet(DBServiceHibernate dbService) {
-        this.dbService = dbService;
+    public WebSocketCachInfoServlet(CacheEngine<Long, UserDataSet> userCache) {
+        this.userCache = userCache;
     }
 
     @Override
     public void configure(WebSocketServletFactory factory) {
         factory.getPolicy().setIdleTimeout(LOGOUT_TIME);
-        factory.setCreator(new CachInfoWebSocketCreator(dbService));
+        factory.setCreator(new CachInfoWebSocketCreator(userCache));
     }
 
 }

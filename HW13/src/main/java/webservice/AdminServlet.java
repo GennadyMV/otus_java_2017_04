@@ -1,5 +1,6 @@
 package webservice;
 
+import dbservice.UserCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -23,7 +24,7 @@ public class AdminServlet extends HttpServlet {
     private static final String ADMIN_PAGE_TEMPLATE = "admin.html";
 
     @Autowired
-    private DbServiceUsage dbServiceUsage;
+    private UserCache userCache;
 
     @Override
     public void init(ServletConfig config) throws ServletException{
@@ -53,12 +54,8 @@ public class AdminServlet extends HttpServlet {
         pageVariables.put("sessionId", request.getSession().getId());
         pageVariables.put("parameters", request.getParameterMap().toString());
 
-        if (dbServiceUsage == null) {
-            System.err.println("dbServiceUsage is null!!!");
-        }
-
-        pageVariables.put("hitCount", dbServiceUsage.getDbService().getHitCount());
-        pageVariables.put("missCount", dbServiceUsage.getDbService().getMissCount());
+        pageVariables.put("hitCount", userCache.getHitCount());
+        pageVariables.put("missCount", userCache.getMissCount());
 
 
         //let's get login from session
