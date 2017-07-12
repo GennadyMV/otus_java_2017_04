@@ -1,9 +1,8 @@
 package dbservice.impl;
 
 import cache.CacheElement;
-import cache.CacheEngine;
-import cache.impl.CacheEngineImpl;
 import dbservice.DBService;
+import dbservice.UserCache;
 import hibernate.UserDataSetDAO;
 import model.AddressDataSet;
 import model.PhoneDataSet;
@@ -14,24 +13,24 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
  * @author sergey
  *         created on 10.06.17.
  */
+@Configurable
 public class DBServiceHibernate  implements DBService {
 
     private SessionFactory sessionFactory;
-    private CacheEngine<Long, UserDataSet> userCache;
 
-    public static final int MAX_ELEMENTS = 300;
-    public static final long LIFE_TIMES_M = 10;
-    public static final long IDLE_TIME_M = 10;
+    @Autowired
+    private UserCache userCache;
 
     @Override
     public void startup() throws SQLException {
@@ -52,10 +51,6 @@ public class DBServiceHibernate  implements DBService {
         configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 
         sessionFactory = createSessionFactory(configuration);
-        userCache = new CacheEngineImpl<>(MAX_ELEMENTS,
-                TimeUnit.MINUTES.toMillis(LIFE_TIMES_M),
-                TimeUnit.MINUTES.toMillis(IDLE_TIME_M),
-                false);
     }
 
     @Override
@@ -127,13 +122,5 @@ public class DBServiceHibernate  implements DBService {
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
         return configuration.buildSessionFactory(serviceRegistry);
-    }
-
-    public int getHitCount() {
-        return userCache.getHitCount();
-    }
-
-    public int getMissCount() {
-        return userCache.getMissCount();
     }
 }
