@@ -87,10 +87,10 @@ public class SortImplTest {
         assertTrue("sorted array", Arrays.equals(sortedArray, okArray));
     }
 
-    //difference between 5 and 9
+    //difference between 4 and 7
     @Test
     public void stressTest() throws Exception {
-        final int ARRAY_SIZE = 10_000;
+        final int ARRAY_SIZE = 1_000_000;
         final int[] initArray = new int[ARRAY_SIZE];
 
         Random random = new Random();
@@ -113,10 +113,10 @@ public class SortImplTest {
         assertTrue("sorted array", Arrays.equals(sortedArray, okArray));
     }
 
-    //difference between 2 and 5
+    //difference between 3 and 5
     @Test
     public void stressTestThread() throws Exception {
-        final int ARRAY_SIZE = 10_000;
+        final int ARRAY_SIZE = 1_000_000;
         final int[] initArray = new int[ARRAY_SIZE];
 
         Random random = new Random();
