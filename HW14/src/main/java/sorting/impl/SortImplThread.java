@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SortImplThread extends SortImplSingle implements Sort {
     private final ThreadPool<SortJob> threadPool;
-    private final int LAST_TASK_ID = 7;
+    private final int LAST_TASK_ID = 9;
     private final AtomicBoolean createTaskFlag = new AtomicBoolean(true);
 
     public SortImplThread(int threadNumber) {
@@ -62,7 +62,6 @@ public class SortImplThread extends SortImplSingle implements Sort {
     protected void sort(SortJob sortJob) {
         try {
             ThreadPoolTask<SortJob> task = makeTaskForPool(sortJob);
-
 
             if (createTaskFlag.get()) {
                 threadPool.addTask(task);
