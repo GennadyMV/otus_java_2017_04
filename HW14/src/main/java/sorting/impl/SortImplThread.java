@@ -5,30 +5,27 @@ import sorting.ThreadPool;
 import sorting.ThreadPoolTask;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author sergey
  *         created on 15.07.17.
  */
 public class SortImplThread extends SortImplSingle implements Sort {
+    private static final AtomicLong taskIdGenerator = new AtomicLong(0);
+    private static final int LAST_TASK_ID = 9;
+
     private final ThreadPool<SortJob> threadPool;
-    private final int LAST_TASK_ID = 9;
     private final AtomicBoolean createTaskFlag = new AtomicBoolean(true);
 
     public SortImplThread(int threadNumber) {
         threadPool = new TheadPoolImpl<>(threadNumber);
     }
 
-
     private ThreadPoolTask<SortJob> makeTaskForPool(SortJob sortJob) {
         return new ThreadPoolTask<SortJob>() {
-            private long taskId;
+            private long taskId = taskIdGenerator.addAndGet(1);
             private SortJob result;
-
-            @Override
-            public void saveTaskId(long taskId) {
-                this.taskId = taskId;
-            }
 
             @Override
             public long getTaskId() {

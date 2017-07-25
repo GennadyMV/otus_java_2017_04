@@ -19,7 +19,7 @@ public class TheadPoolImpl<R> implements ThreadPool<R> {
     private final int TASK_QUEUE_SIZE = 1000;
     private final int THREAD_POOL_SIZE;
 
-    private final AtomicLong taskIdGenetator = new AtomicLong(0);
+
     private final BlockingQueue<ThreadPoolTask<R>> tasks = new ArrayBlockingQueue<>(TASK_QUEUE_SIZE);
     private final Map<Long, ThreadPoolTask<R>> tasksWithResults = new ConcurrentHashMap<>();
 
@@ -51,8 +51,6 @@ public class TheadPoolImpl<R> implements ThreadPool<R> {
 
     @Override
     public void addTask(ThreadPoolTask<R> task) throws InterruptedException {
-        final long taskId = taskIdGenetator.addAndGet(1);
-        task.saveTaskId(taskId);
         tasks.put(task);
     }
 
