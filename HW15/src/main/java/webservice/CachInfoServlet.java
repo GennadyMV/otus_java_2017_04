@@ -55,6 +55,7 @@ public class CachInfoServlet extends HttpServlet {
             while (messageResponse == null) {
                 System.out.println(new Date() + " Waiting for response...");
                 utils.sleep(1);
+                messageResponse = messageSystem.getResponse(adress);
             }
 
             final String data = new Gson().toJson(messageResponse.getValue());
