@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Admin</title>
+    <script src="js/cachInfo.js" type="text/javascript"></script>
+</head>
+<body onload='setInterval(function(){refresh()}, 1000 ); refresh();'>
+<div class="top">
+  <img src="logo.png"/>
+  <br/>
+</div>
+    <p>Login: ${login}</p>
+    <p>Method: ${method}</p>
+    <p>URL: ${URL}</p>
+    <p>Locale: ${locale}</p>
+    <p>SessionId: ${sessionId}</p>
+    <p>Parameters: ${parameters}</p>
+
+    <h2>DbService cache</h2>
+    <table border="0">
+        <tr><td>HitCount:</td>  <td><div id="hitCount">${hitCount}</div></td></tr>
+        <tr><td>MissCount:</td> <td><div id="missCount">${missCount}</div></td></tr>
+    </table>
+</body>
+</html>
