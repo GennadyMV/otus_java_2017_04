@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author sergey
@@ -20,6 +22,8 @@ public class RequestManager {
     private final int port;
     private final Map<Services,List<Integer>> portMapping = new HashMap<>();
     private final Map<Services,Integer> nextPortMapping = new HashMap<>();
+    private final static int THREAD_COUNT = 10;
+    private final Executor executor = Executors.newFixedThreadPool(THREAD_COUNT);
 
     public RequestManager(int port) {
         this.port = port;
@@ -35,18 +39,12 @@ public class RequestManager {
         while (true) {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 Socket client = serverSocket.accept();
-                new Thread(() -> {
-                    try {
-                        processRequest(client);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+                executor.execute(() -> processRequest(client));
             }
         }
     }
 
-    private void processRequest(Socket client) throws IOException {
+    private void processRequest(Socket client) {
         System.out.println(Thread.currentThread().getName());
         try (BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
              PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
@@ -60,6 +58,8 @@ public class RequestManager {
                     break;
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
