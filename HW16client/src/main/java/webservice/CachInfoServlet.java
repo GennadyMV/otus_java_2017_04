@@ -3,6 +3,7 @@ package webservice;
 import cache.CachInfo;
 import com.google.gson.Gson;
 import messageSystem.Address;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -14,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
-import static msgservice.Start.PORT;
-
 /**
  * @author sergey
  *         created on 07.07.17.
@@ -24,6 +23,9 @@ import static msgservice.Start.PORT;
 @Component
 public class CachInfoServlet extends HttpServlet {
     private Address adress;
+
+    @Autowired
+    private CachInfoHelper cachInfoHelper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -41,7 +43,7 @@ public class CachInfoServlet extends HttpServlet {
         final Utils utils = new Utils();
         if (request.getSession().getAttribute("login") != null) {
             System.out.println(new Date() + " Request to messageSystem...");
-            final CachInfo cachInfo = new CachInfoHelper(PORT).get(adress);
+            final CachInfo cachInfo = cachInfoHelper.get(adress);
             final String data = new Gson().toJson(cachInfo);
             System.out.println(new Date() + " Sending message:" + data);
             response.getWriter().println(data);

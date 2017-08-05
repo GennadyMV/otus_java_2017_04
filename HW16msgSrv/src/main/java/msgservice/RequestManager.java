@@ -35,12 +35,19 @@ public class RequestManager {
         while (true) {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 Socket client = serverSocket.accept();
-                processRequest(client);
+                new Thread(() -> {
+                    try {
+                        processRequest(client);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
             }
         }
     }
 
     private void processRequest(Socket client) throws IOException {
+        System.out.println(Thread.currentThread().getName());
         try (BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
              PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             String inputLine = in.readLine();
