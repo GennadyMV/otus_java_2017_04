@@ -2,6 +2,7 @@ package webservice;
 
 import cache.CachInfo;
 import messageSystem.Address;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -24,7 +25,11 @@ import static msgservice.Start.PORT;
 @Configurable
 public class AdminServlet extends HttpServlet {
     private static final String ADMIN_PAGE_TEMPLATE = "admin.html";
+    private final int messageServicePort = PORT;
     private Address adress;
+
+    @Autowired
+    private CachInfoHelper cachInfoHelper;
 
     @Override
     public void init(ServletConfig config) throws ServletException{
@@ -55,7 +60,7 @@ public class AdminServlet extends HttpServlet {
         pageVariables.put("sessionId", request.getSession().getId());
         pageVariables.put("parameters", request.getParameterMap().toString());
 
-        final CachInfo cachInfo = new CachInfoHelper(PORT).get(adress);
+        final CachInfo cachInfo = cachInfoHelper.get(adress);
         pageVariables.put("hitCount", cachInfo.getHitCount());
         pageVariables.put("missCount", cachInfo.getMissCount());
 
